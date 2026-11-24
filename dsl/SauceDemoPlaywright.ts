@@ -116,6 +116,8 @@ export class SauceDemoPlaywright implements SauceDemoDSL {
   async consulterFicheProduit(nomProduit: string): Promise<void> {
     await this.zoneProduit(nomProduit).locator('[data-test="inventory-item-name"]').click();
     await this.page.waitForURL(/inventory-item\.html/);
+    // SPA : l'URL change avant le rendu, on attend aussi le contenu de la page
+    await this.sel('back-to-products').waitFor();
   }
 
   // --- T3 Gérer le panier ---
@@ -130,11 +132,13 @@ export class SauceDemoPlaywright implements SauceDemoDSL {
   async consulterPanier(): Promise<void> {
     await this.sel('shopping-cart-link').click();
     await this.page.waitForURL(/cart\.html/);
+    await this.sel('cart-list').waitFor();
   }
 
   async continuerAchats(): Promise<void> {
     await this.sel('continue-shopping').click();
     await this.page.waitForURL(/inventory\.html/);
+    await this.sel('inventory-list').waitFor();
   }
 
   // --- T4 Passer commande ---
@@ -165,6 +169,7 @@ export class SauceDemoPlaywright implements SauceDemoDSL {
   async revenirAccueil(): Promise<void> {
     await this.sel('back-to-products').click();
     await this.page.waitForURL(/inventory\.html/);
+    await this.sel('inventory-list').waitFor();
   }
 
   async genererPdfCommande(): Promise<void> {
